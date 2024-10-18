@@ -1,0 +1,80 @@
+package com.responsive.naveen.assignment.demo.controller;
+
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.responsive.naveen.assignment.demo.model.TradingUsers;
+import com.responsive.naveen.assignment.demo.repository.TradingRepository;
+import com.responsive.naveen.assignment.demo.service.SequenceGeneratorService;
+
+import jakarta.validation.Valid;
+
+
+
+//@CrossOrigin(origins = "http://localhost:4200")
+@RestController
+@RequestMapping("/api/v1")
+public class TradingController {
+    @Autowired
+    private TradingRepository tradingRepository;
+
+    @Autowired
+    private SequenceGeneratorService sequenceGeneratorService;
+
+    @GetMapping("/employees")
+    public List < TradingUsers > getAllEmployees() {
+        return tradingRepository.findAll();
+    }
+
+    @GetMapping("/users/{id}")
+    public ResponseEntity < TradingUsers > getEmployeeById(@PathVariable(value = "id") Long employeeId)
+    throws ResourceNotFoundException {
+    	TradingUsers users = tradingRepository.findById(employeeId)
+            .orElseThrow(() - > new ResourceNotFoundException("Employee not found for this id :: " + employeeId));
+        return ResponseEntity.ok().body(users);
+    }
+
+    @PostMapping("/users")
+    public TradingUsers createEmployee(@Valid @RequestBody TradingUsers employee) {
+        employee.setId(sequenceGeneratorService.generateSequence(TradingUsers.SEQUENCE_NAME));
+        return tradingRepository.save(employee);
+    }
+
+    @PutMapping("/users/{id}")
+    public ResponseEntity < TradingUsers > updateEmployee(@PathVariable(value = "id") Long employeeId,
+        @Valid @RequestBody TradingUsers employeeDetails) throws ResourceNotFoundException {
+    	TradingUsers employee = tradingRepository.findById(employeeId)
+            .orElseThrow(() - > new ResourceNotFoundException("Employee not found for this id :: " + employeeId));
+
+        employee.setEmailId(employeeDetails.getEmailId());
+        employee.setLastName(employeeDetails.getLastName());
+        employee.setFirstName(employeeDetails.getFirstName());
+        final TradingUsers updatedEmployee = tradingRepository.save(employee);
+        return ResponseEntity.ok(updatedEmployee);
+    }
+
+    @DeleteMapping("/users/{id}")
+    public Map < String, Boolean > deleteEmployee(@PathVariable(value = "id") Long employeeId)
+    throws ResourceNotFoundException {
+    	TradingUsers employee = tradingRepository.findById(employeeId)
+            .orElseThrow(() - > new ResourceNotFoundException("Employee not found for this id :: " + employeeId));
+
+        tradingRepository.delete(employee);
+        Map < String, Boolean > response = new HashMap < > ();
+        response.put("deleted", Boolean.TRUE);
+        return response;
+    }
+}

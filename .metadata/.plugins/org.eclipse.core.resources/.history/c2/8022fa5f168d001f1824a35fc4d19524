@@ -1,0 +1,4 @@
+spring.application.name=TradingProject
+
+# MONGODB (MongoProperties)
+spring.data.mongodb.uri=mongodb://localhost:27017/TradingUsers

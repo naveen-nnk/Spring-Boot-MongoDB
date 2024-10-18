@@ -1,0 +1,5 @@
+package com.responsive.naveen.assignment.demo.repository;
+
+public class TradingUsersRepository {
+
+}
