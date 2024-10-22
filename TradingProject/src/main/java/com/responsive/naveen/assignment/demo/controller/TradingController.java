@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.responsive.naveen.assignment.demo.exception.ResourceNotFoundException;
-import com.responsive.naveen.assignment.demo.model.TradingUsers;
+import com.responsive.naveen.assignment.demo.model.TradingStocks;
 import com.responsive.naveen.assignment.demo.repository.TradingRepository;
 import com.responsive.naveen.assignment.demo.service.SequenceGeneratorService;
 
@@ -36,45 +36,45 @@ public class TradingController {
     @Autowired
     private SequenceGeneratorService sequenceGeneratorService;
 
-    @GetMapping("/users")
-    public List < TradingUsers > getAllUsers() {
+    @GetMapping("/stocks")
+    public List < TradingStocks > getAllStocks() {
         return tradingRepository.findAll();
     }
 
-    @GetMapping("/users/{id}")
-    public ResponseEntity < TradingUsers > getUserById(@PathVariable(value = "id") Long userId)
+    @GetMapping("/stocks/{id}")
+    public ResponseEntity < TradingStocks > getStockById(@PathVariable(value = "id") Long stockId)
     throws ResourceNotFoundException {
-    	TradingUsers users = tradingRepository.findById(userId)
-            .orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + userId));
-        return ResponseEntity.ok().body(users);
+    	TradingStocks Stocks = tradingRepository.findById(stockId)
+            .orElseThrow(() -> new ResourceNotFoundException("Stock not found for this id :: " + stockId));
+        return ResponseEntity.ok().body(Stocks);
     }
 
-    @PostMapping("/users")
-    public TradingUsers createUser(@Valid @RequestBody TradingUsers user) {
-        user.setId(sequenceGeneratorService.generateSequence(TradingUsers.SEQUENCE_NAME));
-        return tradingRepository.save(user);
+    @PostMapping("/stocks")
+    public TradingStocks createStock(@Valid @RequestBody TradingStocks stock) {
+        stock.setId(sequenceGeneratorService.generateSequence(TradingStocks.SEQUENCE_NAME));
+        return tradingRepository.save(stock);
     }
 
-    @PutMapping("/users/{id}")
-    public ResponseEntity < TradingUsers > updateUser(@PathVariable(value = "id") Long userId,
-        @Valid @RequestBody TradingUsers userDetails) throws ResourceNotFoundException {
-    	TradingUsers user = tradingRepository.findById(userId)
-            .orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + userId));
+    @PutMapping("/stocks/{id}")
+    public ResponseEntity < TradingStocks > updateStock(@PathVariable(value = "id") Long stockId,
+        @Valid @RequestBody TradingStocks stockDetails) throws ResourceNotFoundException {
+    	TradingStocks stock = tradingRepository.findById(stockId)
+            .orElseThrow(() -> new ResourceNotFoundException("Stock not found for this id :: " + stockId));
 
-        user.setEmailId(userDetails.getEmailId());
-        user.setLastName(userDetails.getLastName());
-        user.setFirstName(userDetails.getFirstName());
-        final TradingUsers updatedUser = tradingRepository.save(user);
-        return ResponseEntity.ok(updatedUser);
+        stock.setEmailId(stockDetails.getEmailId());
+        stock.setQuantity(stockDetails.getQuantity());
+        stock.setStockName(stockDetails.getStockName());
+        final TradingStocks updatedStock = tradingRepository.save(stock);
+        return ResponseEntity.ok(updatedStock);
     }
 
-    @DeleteMapping("/users/{id}")
-    public Map < String, Boolean > deleteUser(@PathVariable(value = "id") Long userId)
+    @DeleteMapping("/stocks/{id}")
+    public Map < String, Boolean > deleteStock(@PathVariable(value = "id") Long stockId)
     throws ResourceNotFoundException {
-    	TradingUsers user = tradingRepository.findById(userId)
-            .orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + userId));
+    	TradingStocks stock = tradingRepository.findById(stockId)
+            .orElseThrow(() -> new ResourceNotFoundException("Stock not found for this id :: " + stockId));
 
-        tradingRepository.delete(user);
+        tradingRepository.delete(stock);
         Map < String, Boolean > response = new HashMap < > ();
         response.put("deleted", Boolean.TRUE);
         return response;

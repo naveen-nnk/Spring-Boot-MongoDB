@@ -1,0 +1,74 @@
+package com.responsive.naveen.assignment.demo.model;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "TradingStocks")
+public class TradingStocks {
+
+    @Transient
+    public static final String SEQUENCE_NAME = "stocks_sequence";
+
+    @Id
+    private long id;
+
+    @NotBlank
+    @Size(max = 100)
+    @Indexed(unique = true)
+    private String stockName;
+    private int quantity;
+
+    @NotBlank
+    @Size(max = 100)
+    @Indexed(unique = true)
+    private String emailId;
+
+    public TradingStocks() {
+
+    }
+
+    public TradingStocks(String firstName, int quantity, String emailId) {
+        this.stockName = firstName;
+        this.quantity = quantity;
+        this.emailId = emailId;
+    }
+
+    public long getId() {
+        return id;
+    }
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return stockName;
+    }
+    public void setFirstName(String firstName) {
+        this.stockName = firstName;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+    public void setquantity(String quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getEmailId() {
+        return emailId;
+    }
+    public void setEmailId(String emailId) {
+        this.emailId = emailId;
+    }
+
+    @Override
+    public String toString() {
+        return "TradingStocks [id=" + id + ", firstName=" + stockName + ", lastName=" + quantity + ", emailId=" + emailId +
+            "]";
+    }
+}
